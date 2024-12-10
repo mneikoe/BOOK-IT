@@ -1,71 +1,95 @@
 /\*\*
 
-- @api {get} /api/user/logout Logout User
+- @api {get} /users/logout Logout User
 - @apiName LogoutUser
-- @apiGroup User Authentication
+- @apiGroup Authentication
+- @apiVersion 1.0.0
 -
-- @apiHeader {String} Authorization Bearer token required for authentication
+- @apiDescription Logs out the currently authenticated user by invalidating their session.
+- Requires a valid authentication token to access this endpoint.
+-
+- @apiHeader {String} Authorization Bearer token for user authentication
 - @apiHeaderExample {json} Header-Example:
--     {
--       "Authorization": "Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
--     }
+- {
+-     "Authorization": "Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+- }
 -
-- @apiSuccess {Boolean} success Indicates if the logout was successful
-- @apiSuccess {String} message Success message
+- @apiSuccess (200) {Boolean} success Indicates successful logout
+- @apiSuccess (200) {String} message Confirmation message of successful logout
 -
 - @apiSuccessExample {json} Success-Response:
--     HTTP/1.1 200 OK
--     {
--       "success": true,
--       "message": "Successfully logged out"
--     }
+- HTTP/1.1 200 OK
+- {
+-     "success": true,
+-     "message": "User logged out successfully"
+- }
 -
-- @apiError Unauthorized Invalid or missing authentication token
-- @apiErrorExample {json} Error-Response:
--     HTTP/1.1 401 Unauthorized
--     {
--       "success": false,
--       "message": "Authentication required"
--     }
+- @apiError (401) Unauthorized Missing or invalid authentication token
+- @apiErrorExample {json} Unauthorized-Error:
+- HTTP/1.1 401 Unauthorized
+- {
+-     "success": false,
+-     "message": "Authentication token is required"
+- }
 -
-- @apiDescription This endpoint allows authenticated users to logout from the system.
-- The endpoint invalidates the current session/token.
-- Authentication middleware (authMiddleware.authUser) is required.
+- @apiError (403) Forbidden Invalid or expired authentication token
+- @apiErrorExample {json} Forbidden-Error:
+- HTTP/1.1 403 Forbidden
+- {
+-     "success": false,
+-     "message": "Invalid or expired token"
+- }
+-
+- @apiSampleRequest /users/logout
 -
 - @apiPermission Authenticated User
 -
-- @apiVersion 1.0.0
+- @apiNote This endpoint requires the authMiddleware.authUser middleware for authentication verification
   \*/
 
 Copy
 
 Insert at cursor
-This documentation follows the apiDoc format and includes:
+This documentation includes:
 
-The HTTP method (GET) and endpoint path
+Basic Information:
 
-API name and group for organizational purposes
+HTTP Method: GET
 
-Required headers (Authorization token)
+Endpoint: /users/logout
 
-Success response format and example
+Group: Authentication
 
-Error response format and example
+Version information
 
-Description of the endpoint's functionality
+Authentication Requirements:
+
+Bearer token requirement
+
+Header example showing the token format
+
+Success Response:
+
+200 OK status code
+
+Response body structure
+
+Example of successful response
+
+Error Responses:
+
+401 Unauthorized error (missing token)
+
+403 Forbidden error (invalid token)
+
+Example error responses
+
+Additional Information:
 
 Permission requirements
 
-API version
+Middleware usage note
 
-The documentation clearly shows that:
+Description of the endpoint's purpose
 
-The endpoint requires authentication via a Bearer token
-
-It's a GET request
-
-The successful response will include a success flag and message
-
-Possible error scenarios are documented
-
-The middleware requirement is mentioned
+This documentation follows standard API documentation practices and provides all necessary information for developers to implement and use the logout endpoint correctly.
