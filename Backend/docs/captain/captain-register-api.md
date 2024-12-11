@@ -1,0 +1,115 @@
+/\*\*
+
+- Captain Routes Documentation
+-
+- This module defines the API routes for captain-related operations using Express Router.
+-
+- Base Route: /captain
+  \*/
+
+/\*\*
+
+- POST /register
+- Registers a new captain in the system
+-
+- Request Body:
+- {
+- email: string, // Must be a valid email format
+- fullname: {
+-     firstname: string   // Minimum 3 characters
+- },
+- password: string, // Minimum 6 characters
+- vehicle: {
+-     color: string,      // Minimum 3 characters
+-     plate: string,      // Minimum 3 characters
+-     capacity: number,   // Minimum value of 1
+-     vehicleType: string // Must be one of: "car", "bike", "auto"
+- }
+- }
+-
+- Example Request:
+- {
+- "email": "john.doe@example.com",
+- "fullname": {
+-     "firstname": "John"
+- },
+- "password": "securepass123",
+- "vehicle": {
+-     "color": "Black",
+-     "plate": "ABC123",
+-     "capacity": 4,
+-     "vehicleType": "car"
+- }
+- }
+-
+- Successful Response (200 OK):
+- {
+- "success": true,
+- "message": "Captain registered successfully",
+- "data": {
+-     "captainId": "c123456789",
+-     "email": "john.doe@example.com",
+-     "fullname": {
+-       "firstname": "John"
+-     },
+-     "vehicle": {
+-       "color": "Black",
+-       "plate": "ABC123",
+-       "capacity": 4,
+-       "vehicleType": "car"
+-     },
+-     "status": "active",
+-     "createdAt": "2024-01-20T10:30:00.000Z"
+- }
+- }
+-
+- Error Responses:
+-
+- 1.  Validation Error (400 Bad Request):
+- {
+- "success": false,
+- "message": "Validation failed",
+- "errors": [
+-     {
+-       "field": "email",
+-       "message": "Invalid email format"
+-     },
+-     {
+-       "field": "password",
+-       "message": "Password must be at least 6 characters long"
+-     }
+- ]
+- }
+-
+- 2.  Email Already Exists (409 Conflict):
+- {
+- "success": false,
+- "message": "Email already registered",
+- "error": "DUPLICATE_EMAIL"
+- }
+-
+- 3.  Server Error (500 Internal Server Error):
+- {
+- "success": false,
+- "message": "Internal server error",
+- "error": "SERVER_ERROR"
+- }
+-
+- Validation Rules:
+- - Email: Must be a valid email format
+- - Firstname: Minimum 3 characters
+- - Password: Minimum 6 characters
+- - Vehicle Color: Minimum 3 characters
+- - Vehicle Plate: Minimum 3 characters
+- - Vehicle Capacity: Must be an integer >= 1
+- - Vehicle Type: Must be either "car", "bike", or "auto"
+-
+- Authentication: No authentication required
+- Rate Limit: 5 requests per IP per minute
+-
+- Handler: captainController.registerCaptain
+-
+- @route POST /register
+- @validation express-validator
+- @controller captainController.registerCaptain
+-

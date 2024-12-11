@@ -1,0 +1,105 @@
+/\*\*
+
+- POST /login
+- Authenticates a captain and provides access token
+-
+- Request Body:
+- {
+- email: string, // Must be a valid email format
+- password: string // Minimum 6 characters
+- }
+-
+- Example Request:
+- {
+- "email": "john.doe@example.com",
+- "password": "securepass123"
+- }
+-
+- Successful Response (200 OK):
+- {
+- "success": true,
+- "message": "Login successful",
+- "data": {
+-     "captain": {
+-       "id": "c123456789",
+-       "email": "john.doe@example.com",
+-       "fullname": {
+-         "firstname": "John"
+-       },
+-       "vehicle": {
+-         "color": "Black",
+-         "plate": "ABC123",
+-         "capacity": 4,
+-         "vehicleType": "car"
+-       },
+-       "status": "active"
+-     },
+-     "token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", // JWT token
+-     "loginTime": "2024-01-20T10:30:00.000Z"
+- }
+- }
+-
+- Error Responses:
+-
+- 1.  Validation Error (400 Bad Request):
+- {
+- "success": false,
+- "message": "Validation failed",
+- "errors": [
+-     {
+-       "field": "email",
+-       "message": "Invalid email"
+-     },
+-     {
+-       "field": "password",
+-       "message": "Password must be at least 6 characters long"
+-     }
+- ]
+- }
+-
+- 2.  Invalid Credentials (401 Unauthorized):
+- {
+- "success": false,
+- "message": "Invalid email or password",
+- "error": "INVALID_CREDENTIALS"
+- }
+-
+- 3.  Account Inactive/Suspended (403 Forbidden):
+- {
+- "success": false,
+- "message": "Account is currently inactive or suspended",
+- "error": "ACCOUNT_INACTIVE"
+- }
+-
+- 4.  Server Error (500 Internal Server Error):
+- {
+- "success": false,
+- "message": "Internal server error",
+- "error": "SERVER_ERROR"
+- }
+-
+- Validation Rules:
+- - Email: Must be a valid email format
+- - Password: Minimum 6 characters
+-
+- Security Features:
+- - Implements rate limiting to prevent brute force attacks
+- - Logs failed login attempts
+- - Returns same error for invalid email/password to prevent user enumeration
+-
+- Token Information:
+- - JWT token is provided upon successful authentication
+- - Token expires in 24 hours
+- - Token must be included in subsequent requests in Authorization header
+- - Format: Authorization: Bearer <token>
+-
+- Rate Limiting:
+- - Maximum 5 login attempts per IP address per 15 minutes
+- - Account temporarily locked after 5 failed attempts
+-
+- Handler: captainController.loginCaptain
+-
+- @route POST /login
+- @validation express-validator
+- @controller captainController.loginCaptain
+  \*/
