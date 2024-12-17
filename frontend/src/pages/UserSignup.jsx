@@ -1,5 +1,9 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import axios from "axios";
+import { UserDataContext } from "../context/UserContext";
 
 const UserSignup = () => {
   const [email, setEmail] = useState("");
@@ -8,17 +12,28 @@ const UserSignup = () => {
   const [lastName, setLastName] = useState("");
   const [userData, setUserData] = useState({});
 
-  const submitHandler = (e) => {
+  const navigate = useNavigate();
+  const { user, setUser } = useContext(UserDataContext);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    setUserData({
+    const newUser = {
       email: email,
       password: password,
-      fullName: {
-        firstName: firstName,
-        lastName: lastName,
+      fullname: {
+        firstname: firstName,
+        lastname: lastName,
       },
-    });
-    console.log(userData);
+    };
+    const apiUrl = "http://localhost:4000/users/register"; // Replace with your API endpoint
+    console.log("API URL:", apiUrl); // Debugging statement to check the URL
+    const response = await axios.post(apiUrl, newUser);
+    if (response.status === 201) {
+      const data = response.data;
+      setUser(data.user);
+      navigate("/home");
+    }
+
     setEmail("");
     setPassword("");
     setFirstName("");
@@ -32,11 +47,7 @@ const UserSignup = () => {
           src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
           alt=""
         />
-        <form
-          onSubmit={(e) => {
-            submitHandler(e);
-          }}
-        >
+        <form onSubmit={submitHandler}>
           <h3 className="text-lg font-medium mb-2">Whats Your Name</h3>
           <div className="flex gap-4 mb-6">
             <input
@@ -89,7 +100,7 @@ const UserSignup = () => {
             className="bg-[#111] text-white font-semibold mb-3 rounded px-4 py-2  w-full text-lg placceholder:text-base"
             type="submit"
           >
-            Login
+            Create Account
           </button>
           <p className="text-center">
             Already have a Account ?{" "}
