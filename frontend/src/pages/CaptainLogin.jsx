@@ -1,14 +1,31 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { CaptainDataContext } from "../context/CaptainContext";
+import react from "react";
 const CaptainLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [captainData, setCaptainData] = useState({});
 
-  const submitHandler = (e) => {
+  const navigate = useNavigate();
+  const { captain, setCaptain } = react.useContext(CaptainDataContext);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    setCaptainData({ email: email, password: password });
-    console.log(captainData);
+    const newCaptain = { email: email, password: password };
+    const apiUrl = "http://localhost:4000/captains/login"; // Replace with your API endpoint
+    console.log("API URL:", apiUrl); // Debugging statement to check the URL
+    const response = await axios.post(apiUrl, newCaptain);
+
+    if (response.status === 200) {
+      const data = response.data;
+      setCaptain(data.captain);
+      localStorage.setItem("token", data.token);
+      navigate("/captain-home");
+    }
+
+    console.log(newCaptain);
     setEmail("");
     setPassword("");
   };
@@ -21,11 +38,7 @@ const CaptainLogin = () => {
           src="https://www.pngall.com/wp-content/uploads/4/Uber-PNG-Image.png"
           alt=""
         />
-        <form
-          onSubmit={(e) => {
-            submitHandler(e);
-          }}
-        >
+        <form onSubmit={submitHandler}>
           <h3 className="text-lg font-medium mb-2">Whats Your Email</h3>
           <input
             required

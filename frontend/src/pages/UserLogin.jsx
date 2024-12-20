@@ -1,14 +1,33 @@
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { UserDataContext } from "../context/UserContext.jsx";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 const UserLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userData, setUserData] = useState({});
 
-  const submitHandler = (e) => {
+  const navigate = useNavigate();
+  const { user, setUser } = useContext(UserDataContext);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    setUserData({ email: email, password: password });
-    console.log(userData);
+    const user_Data = {
+      email: email,
+      password: password,
+    };
+    const apiUrl = "http://localhost:4000/users/login";
+    console.log("API URL:", apiUrl);
+    const response = await axios.post(apiUrl, user_Data);
+    if (response.status === 200) {
+      const data = response.data;
+      setUser(data.user);
+      localStorage.setItem("token", data.token); //we use this to take the token so that on refreshing page the user must not be logged out
+      navigate("/home");
+    }
+
     setEmail("");
     setPassword("");
   };
@@ -21,11 +40,7 @@ const UserLogin = () => {
           src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
           alt=""
         />
-        <form
-          onSubmit={(e) => {
-            submitHandler(e);
-          }}
-        >
+        <form onSubmit={submitHandler}>
           <h3 className="text-lg font-medium mb-2">Whats Your Email</h3>
           <input
             required
