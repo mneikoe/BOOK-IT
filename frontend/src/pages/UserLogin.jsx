@@ -51,7 +51,7 @@ const UserLogin = () => {
             placeholder="Email@example.com"
           />
 
-          <h3 className="text-lg font-medium mb-2">Enter Password</h3>
+          <h3 className="text-lg font-medium mb-2">enter password</h3>
 
           <input
             required
